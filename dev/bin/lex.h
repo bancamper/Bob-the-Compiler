@@ -5,28 +5,33 @@
 	Date: 10 Feb 2016
 
 	This file declares all the functions and constant data types throughout the
-	lexical analysis
+	lexical analysis.
 */
 
 #ifndef LEXICALGUARD_H
 #define LEXICALGUARD_H
 
-struct Token
-{
-	char kind[], type[];
+struct Token{	
+	std::string desc, type;
 	int line_number;
-} token;
+};
+//type: keyword, identifier, symbol, digit
+//desc: 
 
-struct Token create_token();
+struct Token create_token(std::string desc, std:: string type, int line_number);
 
-bool is_keyword();
+bool is_accepting();
 
-bool is_id();
+bool is_error();
 
-bool is_symbol();
+bool is_keyword(char c);
 
-bool is_digit();
+bool is_identifier(char c);
 
-void lets_get_lexical(int line_count, char line_of_code[]);
+bool is_symbol(char c);
+
+bool is_digit(char c);
+
+std::vector<Token> lets_get_lexical(std::string line_of_code);
 
 #endif

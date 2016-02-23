@@ -1,22 +1,40 @@
-#include <iostream>
-#include <fstream>
-#include "bin/lex.h"
+/*
+	File: bobc.cpp
+	Name: Juan Bancamper
+	Class: CMPT 432
+	Date: 17 Feb 2016
 
-using namespace std;
+	This file recieves a plain text file via the command line
+	and compiles the programming language
+ */ 
+#include <iostream>
+#include <map>
+#include <vector>
+#include "bin/lex.h"
+// #include "err.h"
+// #include "bin/parse.h"
 
 int main(int argc, char const *argv[]){
-	const int SIZE = 100;
-	int line_count = 1;
-	char buffer[SIZE];
+	
+	std::vector<Token> tokens;
 
-	ifstream code;
-	code.open(argv[1], ios::in);
+	// std::map<std::string, std::string> symbols;
+	// symbols["{"] = "open_block";
+	// symbols["}"] = "closed_block";
+	// symbols["("] = "open_ paren";
+	// symbols[")"] = "closed_paren";
+	// symbols["="] = "assign";
+	// symbols["=="] = "equals";
+	// symbols["!="] = "not_equals";
+	// symbols["+"] = "plus";
+	// symbols["$"] = "end_of_program";
+	// symbols["\""] = "quote";
 
-	while(code.getline(buffer, SIZE)){
-		lets_get_lexical(line_count++, buffer);
-		// cout << buffer;
-	}
+	// std::cout << symbols.end() -> first << std::endl;
 
+	tokens = lets_get_lexical(argv[argc - 1]);
+
+	// parse(tokens);
 	
 	return 0;
 }
