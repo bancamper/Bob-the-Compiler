@@ -1,7 +1,7 @@
 {
-	intaa=1print(a)
-	while(a != 2){
-		a + 1
-		print(a)
-	}
-} $
+    intaa=1print(a)
+    while(a != 1){
+        print(a)
+        a = 1 + a
+    }
+}$

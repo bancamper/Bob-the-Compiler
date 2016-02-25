@@ -250,17 +250,19 @@ std::vector<Token> lets_get_lexical(std::string file){
 			}
 			else{
 				if(c == ' '){
-					tokens.push_back(
-						create_token(
-							std::string(1, c),
-							"space",
-							line_count
-						)
-					);
+					// tokens.push_back(
+					// 	create_token(
+					// 		std::string(1, c),
+					// 		"space",
+					// 		line_count
+					// 	)
+					// );
 				}
 				else{
 					std::cerr << "Invalid character: " << c << " at line " 
 						<< line_count << std::endl;
+
+					exit(EXIT_FAILURE);
 				}
 			}
 		}

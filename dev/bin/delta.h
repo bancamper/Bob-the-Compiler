@@ -38,7 +38,7 @@ std::map<std::string, std::string> symbols_map;
 void create_symbols_map(){
 	symbols_map["{"] = "open_block";
 	symbols_map["}"] = "closed_block";
-	symbols_map["("] = "open_ paren";
+	symbols_map["("] = "open_paren";
 	symbols_map[")"] = "closed_paren";
 	symbols_map["="] = "assign";
 	symbols_map["=="] = "equals";
@@ -67,7 +67,7 @@ int keywords[][16] = {
 	{q37, q37, q37, q37, q37, q37, q18, q37, q37, q37, q37, q37, q37, q37, q37, q37},	//q8
 	{q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q10, q37, q37, q37, q37},	//q9
 	{q37, q37, q37, q37, q37, q37, q11, q37, q37, q37, q37, q37, q37, q37, q37, q37},	//q10
-	{q37, q37, q37, q37, q37, q37, q37, q12, q37, q37, q37, q37, q37, q37, q37, q37}, 	//q11
+	{q37, q37, q37, q37, q37, q37, q37, q37, q12, q37, q37, q37, q37, q37, q37, q37}, 	//q11
 	{q37, q37, q37, q37, q13, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37}, 	//q12
 	{q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37}, 	//q13 string
 	{q37, q37, q37, q37, q37, q37, q15, q37, q37, q37, q37, q37, q37, q37, q37, q37}, 	//q14
@@ -96,6 +96,6 @@ int keywords[][16] = {
 	{q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37, q37}	//q37 error
 };
 
-void reset_state();
+void reset_state(int& state);
 
 #endif
