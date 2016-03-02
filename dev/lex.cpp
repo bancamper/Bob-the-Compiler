@@ -19,6 +19,20 @@
 
 extern int state;
 
+/*
+create_token
+
+Creates a structure of type Token
+
+Parameters: desc, type, line_number
+	desc: a string literal of the current character
+	type: a string of the type of token created
+	line_number: an integer respresenting the line in which the character was
+		found
+
+Return: token
+	the token created
+*/
 struct Token create_token(std::string desc, std::string type, int line_number){
 	Token token = {
 		desc,
@@ -29,24 +43,67 @@ struct Token create_token(std::string desc, std::string type, int line_number){
 	return token;
 }
 
+/*
+reset_state
+
+Sets the current state of the delta function to the start state
+
+Parameters: state
+	a integer reference to the current state
+
+Return: none
+*/
 void reset_state(int& state){
 	state = q0;
 }
 
+/*
+is_accepting
+
+Determines whether or not the state is accepting
+
+Parameters: none
+
+Return: boolean
+	false: not accepting
+	true: accepting
+*/
 bool is_accepting(){
 	std::set<int>::iterator it = keywords_F.find(state);
 
 	return (it == keywords_F.end() ? false : true);
 }
 
+/*
+is_error
+
+Checks if state is in an error state
+
+Parameters: none
+
+Return: boolean
+	false: not in error state
+	true: in error state
+*/
 bool is_error(){
 	return state == q37;
 }
 
+/*
+is_keyword
+
+Determines if current character is within a keyword and changes the state
+based on the input
+
+Parameters: c
+	current character read by lexer
+
+Return: boolean
+	false: not a character in keyword
+	true: character in keyword, and state has been changed
+*/
 bool is_keyword(char c){
 	int input;
-
-	// std::cout << "Char: " << c << std::endl;
 
 	if(c =='a')
 		input = 0;
@@ -106,10 +163,34 @@ bool is_keyword(char c){
 
 }
 
+/*
+is_identifier
+
+Determines if current character is an alpha
+
+Parameters: c
+	current character read by lexer
+
+Return: boolean
+	false: not an alpha character
+	true: alpha character
+*/
 bool is_identifier(char c){
 	return std::regex_match(std::string(1, c), std::regex("[a-z]"));
 }
 
+/*
+is_symbol
+
+Determines if current character is a symbol
+
+Parameters: c
+	current charater read by lexer
+
+Return: boolean
+	false: not a symbol
+	true: symbol
+*/
 bool is_symbol(char c){
 	std::cout << "Symbol: " << c << std::endl;
 
@@ -128,10 +209,35 @@ bool is_symbol(char c){
 	}
 }
 
+/*
+is_digit
+
+Determines if current character is a digit
+
+Parameters: c
+	current character read by lexer
+
+Return: boolean
+	false: not a digit
+	true: digit
+*/
 bool is_digit(char c){
 	return std::regex_match(std::string(1, c), std::regex("[0-9]"));
 }
 
+/*
+lets_get_lexical
+
+Runs through the process of lexical analysis from a file buffer 
+using helper functions to determine tokens produced
+
+Parameters: file
+	the address path to the source code text file
+
+Return: tokens
+	a vector containing all the structured tokens produced by the lexer from
+	the source code
+*/
 std::vector<Token> lets_get_lexical(std::string file){
 	std::vector<Token> tokens;
 	create_symbols_map();
@@ -162,9 +268,7 @@ std::vector<Token> lets_get_lexical(std::string file){
 					is_keyword(next_c);
 
 					if(is_accepting()){
-						// reset_state(state);
 						std::string key(buffer);
-
 
 						std::cout << "Token (keyword: "
 							<< key.substr(i, (current - i) + 1) 
@@ -182,7 +286,6 @@ std::vector<Token> lets_get_lexical(std::string file){
 						break;
 					}
 					else if (is_error()){
-						// reset_state(state);
 						break;
 					}
 				}
@@ -190,9 +293,6 @@ std::vector<Token> lets_get_lexical(std::string file){
 				if(keyword){
 					i = current;
 					continue;
-				}
-				else{
-					// reset_state(state);
 				}
 			}
 			if (is_identifier(c)){
@@ -272,8 +372,9 @@ std::vector<Token> lets_get_lexical(std::string file){
 
 	std::cout << std::endl;
 
-	for (std::vector<Token>::iterator i = tokens.begin(); i != tokens.end(); ++i){
-		std::cout << "Token (" << i->type << ": " << i->desc << ") found at line " << i->line_number << std::endl;
+	for(std::vector<Token>::iterator i=tokens.begin(); i != tokens.end(); ++i){
+		std::cout << "Token (" << i->type << ": " << i->desc 
+			<< ") found at line " << i->line_number << std::endl;
 	}
 
 	return tokens;

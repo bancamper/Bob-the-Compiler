@@ -27,10 +27,20 @@ std::set<std::string> boolop(bo, bo + 2);
 std::string bv[] = {"false", "true"};
 std::set<std::string> boolval(bv, bv + 2);
 
+/*
+match
 
+This function iterates over a set to match the current token to a certain
+terminal
+
+Parameters: match_set
+	a set containing all the possible matches for a token
+
+Return: none
+*/
 void match(std::set<std::string> match_set){
 
-	for (std::set<std::string>::iterator i = match_set.begin(); i != match_set.end(); ++i){
+	for(std::set<std::string>::iterator i = match_set.begin(); i != match_set.end(); ++i){
 		std::string matched = *i;
 
 		std::cout << "\nTrying to match: " << matched << std::endl;
@@ -49,6 +59,16 @@ void match(std::set<std::string> match_set){
 
 }
 
+/*
+match
+
+Same function as above, just uses one character to match instead of a set
+
+Parameters: character
+	one letter string to match the current token
+
+Return: none
+*/
 void match(std::string character){
 	std::cout << "\nTrying to match: " << character << std::endl;
 	std::cout << "Current Token: " << curr_token -> desc << std::endl;
@@ -64,6 +84,16 @@ void match(std::string character){
 	}
 }
 
+/*
+match_type
+
+Same as the function above, different type of parameter
+
+Parameters: token_type
+	a string of the type of token to be matched
+
+Return: none
+*/
 void match_type(std::string token_type){
 	std::cout << "\nTrying to match: " << token_type << std::endl;
 	std::cout << "Current Token: " << curr_token -> type << std::endl;
@@ -79,24 +109,52 @@ void match_type(std::string token_type){
 	}
 }
 
+/*
+parse_char_list
+
+Checks the current token for a char and recursively iterates the next tokens
+for chars
+
+Parameters: none
+
+Return: none
+*/
 void parse_char_list(){
 	if (!(curr_token -> type).compare("identifier")){
 		match_type("identifier");
 		parse_char_list();
 	}
-	// else if (!(curr_token -> type).compare("space")){
-	// 	match(" ");
-	// 	parse_char_list();
-	// }
+	else if (!(curr_token -> type).compare("space")){
+		match(" ");
+		parse_char_list();
+	}
 	else{
 		// ε production, do nothing
 	}
 }
 
+/*
+parse_identifier
+
+Matches a valid variable name
+
+Parameters: none
+
+Return: none
+*/
 void parse_identifier(){
 	match_type("identifier");
 }
 
+/*
+parse_bool
+
+Matches a valid boolean expression by looking ahead one token
+
+Parameters: none
+
+Return: none
+*/
 void parse_bool(){
 	if(!(curr_token -> type).compare("open_paren")){
 		match_type("open_paren");
@@ -110,12 +168,30 @@ void parse_bool(){
 	}
 }
 
+/*
+parse_string
+
+Matches a valid string expression
+
+Parameters: none
+
+Return: none
+*/
 void parse_string(){
 	match("\"");
 	parse_char_list();
 	match("\"");
 }
 
+/*
+parse_int
+
+Matches a valid integer expression by looking ahead one token
+
+Parameters: none
+
+Return: none
+*/
 void parse_int(){
 	std::vector<Token>::iterator next_token = std::next(curr_token, 1);
 
@@ -129,6 +205,15 @@ void parse_int(){
 	}
 }
 
+/*
+parse_expr
+
+Checks the current token to call the correct parsing function
+
+Parameters: none
+
+Return: none
+*/
 void parse_expr(){
 	if(!(curr_token -> type).compare("digit")){
 		parse_int();
@@ -148,29 +233,74 @@ void parse_expr(){
 	}
 }
 
+/*
+parse_if
+
+Matches a valid if conditional
+
+Parameters: none
+
+Return: none
+*/
 void parse_if(){
 	match("if");
 	parse_bool();
 	parse_block();
 }
 
+/*
+parse_while
+
+Matches a valid while loop declaration
+
+Parameters: none
+
+Return: none
+*/
 void parse_while(){
 	match("while");
 	parse_bool();
 	parse_block();
 }
 
+/*
+parse_var_decl
+
+Matches a valid variable declaration
+
+Parameters: none
+
+Return: none
+*/
 void parse_var_decl(){
 	match(types);
 	parse_identifier();
 }
 
+/*
+parse_assignment
+
+Matches a valid assignment
+
+Parameters: none
+
+Return: none
+*/
 void parse_assingment(){
 	parse_identifier();
 	match("=");
 	parse_expr();
 }
 
+/*
+parse_print
+
+Matches the print keyword and a valid expression
+
+Parameters: none
+
+Return: none
+*/
 void parse_print(){
 	match("print");
 	match("(");
@@ -178,6 +308,15 @@ void parse_print(){
 	match(")");
 }
 
+/*
+parse_statement
+
+Checks the current token to be able to parse the correct statement
+
+Parameters: none
+
+Return: none
+*/
 void parse_statement(){
 	if(!(curr_token -> desc).compare("print")){
 		parse_print();
@@ -203,6 +342,15 @@ void parse_statement(){
 	}
 }
 
+/*
+parse_statement_list
+
+Recursively parses a valid statement
+
+Parameters: none
+
+Return: none
+*/
 void parse_statement_list(){
 	if(!(curr_token -> type).compare("closed_block")){
 		// ε production, do nothing
@@ -214,6 +362,15 @@ void parse_statement_list(){
 
 }
 
+/*
+parse_block
+
+Matches a block of code
+
+Parameters: none
+
+Return: none
+*/
 void parse_block(){
 	if(!(curr_token -> type).compare("open_block")) {
 		match("{");
@@ -226,11 +383,30 @@ void parse_block(){
 	}
 }
 
+/*
+parse_program
+
+Parses a block and matches end of program
+
+Parameters: none
+
+Return: none
+*/
 void parse_program(){
 	parse_block();
 	match("$");
 }
 
+/*
+parse
+
+Starts the parsing process by creating a pointer to the tokens
+
+Parameters: tokens
+	a vector containg the tokens produced by lex.cpp
+
+Return: none
+*/
 void parse(std::vector<Token> tokens){
 	curr_token = tokens.begin();
 	parse_program();

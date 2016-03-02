@@ -18,7 +18,7 @@ struct Token{
 //type: keyword, identifier, symbol, digit
 //desc: 
 
-struct Token create_token(std::string desc, std:: string type, int line_number);
+struct Token create_token(std::string desc, std::string type, int line_number);
 
 bool is_accepting();
 
