@@ -1,7 +1,4 @@
 {
-    intaa=1print(a)
-    while(a != 1){
-        print(a)
-        a = 1 + a
-    }
+    string a
+    a = "unterminated string"
 }$

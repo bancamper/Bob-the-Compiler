@@ -54,7 +54,15 @@ void match(std::set<std::string> match_set){
 		}
 	}
 
-	std::cout << "Parse Error" << std::endl;
+	std::cout << "Parse Error on line " << curr_token -> line_number
+		<< ".\nExpected ";
+
+	for(std::set<std::string>::iterator i = match_set.begin(); i != match_set.end(); ++i){
+		std::cout << *i << ", ";
+	}
+
+	std::cout << "found " << curr_token -> desc 
+		<< ". \n\nCompilation unsuccessful" << std::endl;
 	exit(EXIT_FAILURE);
 
 }
@@ -79,7 +87,9 @@ void match(std::string character){
 		++curr_token;
 	}
 	else{
-		std::cout << "Parse Error" << std::endl;
+		std::cout << "Parse Error on line " << curr_token -> line_number
+			<< ".\nExpected " << character << ", found " << curr_token -> desc
+			<< ".\n\nCompilation unsuccessful" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -104,7 +114,10 @@ void match_type(std::string token_type){
 		++curr_token;
 	}
 	else{
-		std::cout << "Parse Error" << std::endl;
+		std::cout << "Parse Error on line " << curr_token -> line_number
+			<< ".\nExpected type" << token_type << ", found " <<
+			curr_token -> type << ": " << curr_token -> desc
+			<< ".\n\nCompilation unsuccesful" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -122,6 +135,10 @@ Return: none
 void parse_char_list(){
 	if (!(curr_token -> type).compare("identifier")){
 		match_type("identifier");
+		parse_char_list();
+	}
+	else if(!(curr_token -> type).compare("keyword")){
+		match_type("keyword");
 		parse_char_list();
 	}
 	else if (!(curr_token -> type).compare("space")){
@@ -221,14 +238,18 @@ void parse_expr(){
 	else if(!(curr_token -> type).compare("quote")){
 		parse_string();
 	}
-	else if(!(curr_token -> type).compare("open_paren")){
+	else if(!(curr_token -> type).compare("open_paren") ||
+		!(curr_token -> type).compare("keyword")){
 		parse_bool();
 	}
 	else if(!(curr_token -> type).compare("identifier")){
 		parse_identifier();
 	}
 	else{
-		std::cout << "Parse Error" << std::endl;
+		std::cout << "Parse Error on line " << curr_token -> line_number
+			<< ".\nExpected digit, identifier, open_paren, bool_expr, found " <<
+			curr_token -> type << ": " << curr_token -> desc
+			<< ".\n\nCompilation unsuccessful" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -337,7 +358,11 @@ void parse_statement(){
 		parse_block();
 	}
 	else{
-		std::cout << "Parse Error" << std::endl;
+		std::cout << "Parse Error on line " << curr_token -> line_number
+			<< ".\nExpected statement, found " << curr_token -> desc
+			<< "\nStatements begin with:\n\tprint\n\tidentifier -- [a-z]\n\t"
+			<< "int, string, boolean\n\twhile\n\tif\n\t{"
+			<< "\n\nCompilation unsuccessful" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -411,4 +436,3 @@ void parse(std::vector<Token> tokens){
 	curr_token = tokens.begin();
 	parse_program();
 }
-

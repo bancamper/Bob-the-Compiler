@@ -18,6 +18,7 @@
 #include "bin/delta.h"
 
 extern int state;
+bool accept_space = false;
 
 /*
 create_token
@@ -205,6 +206,15 @@ bool is_symbol(char c){
 		std::cout << symbols_map.find(std::string(1,c)) -> first 
 		<< " is " << symbols_map.find(std::string(1,c)) -> second << std::endl;
 
+		if(c == '\"'){
+			if(accept_space){
+				accept_space = false;
+			}
+			else{
+				accept_space = true;
+			}
+		}
+
 		return true;
 	}
 }
@@ -254,7 +264,7 @@ std::vector<Token> lets_get_lexical(std::string file){
 		for(int i = 0; i < strlen(buffer); i++){
 			reset_state(state);
 
-			std::cout << "State before checking char = " << state << std::endl;
+			// std::cout << "State before checking char = " << state << std::endl;
 			
 			char c = buffer[i];
 
@@ -263,7 +273,7 @@ std::vector<Token> lets_get_lexical(std::string file){
 				int current = i + 1;
 
 				for(; current < strlen(buffer); current++){
-					std::cout << "State = " << state << std::endl;
+					// std::cout << "State = " << state << std::endl;
 					char next_c = buffer[current];
 					is_keyword(next_c);
 
@@ -350,13 +360,15 @@ std::vector<Token> lets_get_lexical(std::string file){
 			}
 			else{
 				if(c == ' '){
-					// tokens.push_back(
-					// 	create_token(
-					// 		std::string(1, c),
-					// 		"space",
-					// 		line_count
-					// 	)
-					// );
+					if(accept_space){
+						tokens.push_back(
+							create_token(
+								std::string(1, c),
+								"space",
+								line_count
+							)
+						);
+					}
 				}
 				else{
 					std::cerr << "Invalid character: " << c << " at line " 
