@@ -14,9 +14,11 @@
 #include <stdlib.h>
 #include <vector>
 #include "bin/lex.h"
+#include "bin/cst.h"
 #include "bin/parse.h"
 
 std::vector<Token>::iterator curr_token;
+Tree cst;
 
 std::string t[] = {"int", "string", "boolean"};
 std::set<std::string> types(t, t + 3);
@@ -49,7 +51,9 @@ void match(std::set<std::string> match_set){
 		if(!matched.compare(curr_token -> desc)){
 			std::cout << "Matched token (" << curr_token -> type << ": " 
 				<< curr_token -> desc << ")" << std::endl;
+			cst.add_leaf_node(matched);
 			++curr_token;
+
 			return;
 		}
 	}
@@ -85,6 +89,8 @@ void match(std::string character){
 		std::cout << "Matched token (" << curr_token -> type << ": " 
 			<< curr_token -> desc << ")" << std::endl;
 		++curr_token;
+
+		cst.add_leaf_node(character);
 	}
 	else{
 		std::cout << "Parse Error on line " << curr_token -> line_number
@@ -111,6 +117,7 @@ void match_type(std::string token_type){
 	if(!token_type.compare(curr_token -> type)){
 		std::cout << "Matched token (" << curr_token -> type << ": " 
 			<< curr_token -> desc << ")" << std::endl;
+		cst.add_leaf_node(curr_token -> desc);
 		++curr_token;
 	}
 	else{
@@ -133,6 +140,7 @@ Parameters: none
 Return: none
 */
 void parse_char_list(){
+	cst.add_branch_node("char_list");
 	if (!(curr_token -> type).compare("identifier")){
 		match_type("identifier");
 		parse_char_list();
@@ -148,6 +156,7 @@ void parse_char_list(){
 	else{
 		// ε production, do nothing
 	}
+	cst.kill_all_children();
 }
 
 /*
@@ -160,7 +169,9 @@ Parameters: none
 Return: none
 */
 void parse_identifier(){
+	cst.add_branch_node("identifier");
 	match_type("identifier");
+	cst.kill_all_children();
 }
 
 /*
@@ -173,6 +184,7 @@ Parameters: none
 Return: none
 */
 void parse_bool(){
+	cst.add_branch_node("boolean");
 	if(!(curr_token -> type).compare("open_paren")){
 		match_type("open_paren");
 		parse_expr();
@@ -183,6 +195,7 @@ void parse_bool(){
 	else{
 		match(boolval);
 	}
+	cst.kill_all_children();
 }
 
 /*
@@ -195,9 +208,11 @@ Parameters: none
 Return: none
 */
 void parse_string(){
+	cst.add_branch_node("string");
 	match("\"");
 	parse_char_list();
 	match("\"");
+	cst.kill_all_children();
 }
 
 /*
@@ -210,6 +225,8 @@ Parameters: none
 Return: none
 */
 void parse_int(){
+	cst.add_branch_node("int");
+
 	std::vector<Token>::iterator next_token = std::next(curr_token, 1);
 
 	if(!(next_token -> type).compare("plus")){
@@ -220,6 +237,8 @@ void parse_int(){
 	else{
 		match_type("digit");
 	}
+
+	cst.kill_all_children();
 }
 
 /*
@@ -232,6 +251,7 @@ Parameters: none
 Return: none
 */
 void parse_expr(){
+	cst.add_branch_node("expr");
 	if(!(curr_token -> type).compare("digit")){
 		parse_int();
 	}
@@ -252,6 +272,7 @@ void parse_expr(){
 			<< ".\n\nCompilation unsuccessful" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	cst.kill_all_children();
 }
 
 /*
@@ -264,9 +285,11 @@ Parameters: none
 Return: none
 */
 void parse_if(){
+	cst.add_branch_node("if");
 	match("if");
 	parse_bool();
 	parse_block();
+	cst.kill_all_children();
 }
 
 /*
@@ -279,9 +302,11 @@ Parameters: none
 Return: none
 */
 void parse_while(){
+	cst.add_branch_node("while");
 	match("while");
 	parse_bool();
 	parse_block();
+	cst.kill_all_children();
 }
 
 /*
@@ -294,8 +319,10 @@ Parameters: none
 Return: none
 */
 void parse_var_decl(){
+	cst.add_branch_node("var_decl");
 	match(types);
 	parse_identifier();
+	cst.kill_all_children();
 }
 
 /*
@@ -308,9 +335,11 @@ Parameters: none
 Return: none
 */
 void parse_assingment(){
+	cst.add_branch_node("assignment");
 	parse_identifier();
 	match("=");
 	parse_expr();
+	cst.kill_all_children();
 }
 
 /*
@@ -323,10 +352,12 @@ Parameters: none
 Return: none
 */
 void parse_print(){
+	cst.add_branch_node("print");
 	match("print");
 	match("(");
 	parse_expr();
 	match(")");
+	cst.kill_all_children();
 }
 
 /*
@@ -339,6 +370,7 @@ Parameters: none
 Return: none
 */
 void parse_statement(){
+	cst.add_branch_node("statement");
 	if(!(curr_token -> desc).compare("print")){
 		parse_print();
 	}
@@ -365,6 +397,7 @@ void parse_statement(){
 			<< "\n\nCompilation unsuccessful" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	cst.kill_all_children();
 }
 
 /*
@@ -377,6 +410,7 @@ Parameters: none
 Return: none
 */
 void parse_statement_list(){
+	cst.add_branch_node("statement_list");
 	if(!(curr_token -> type).compare("closed_block")){
 		// ε production, do nothing
 	}
@@ -384,7 +418,7 @@ void parse_statement_list(){
 		parse_statement();
 		parse_statement_list();
 	}
-
+	cst.kill_all_children();
 }
 
 /*
@@ -397,6 +431,7 @@ Parameters: none
 Return: none
 */
 void parse_block(){
+	cst.add_branch_node("block");
 	if(!(curr_token -> type).compare("open_block")) {
 		match("{");
 		parse_statement_list();
@@ -406,6 +441,7 @@ void parse_block(){
 		std::cout << "Parse Error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	cst.kill_all_children();
 }
 
 /*
@@ -418,6 +454,7 @@ Parameters: none
 Return: none
 */
 void parse_program(){
+	cst.add_branch_node("program");
 	parse_block();
 	match("$");
 }
@@ -435,4 +472,7 @@ Return: none
 void parse(std::vector<Token> tokens){
 	curr_token = tokens.begin();
 	parse_program();
+
+	// std::cout << "Tree Root: " << cst.get_root() << std::endl;
+	cst.print_tree(cst.get_root(), 0);
 }

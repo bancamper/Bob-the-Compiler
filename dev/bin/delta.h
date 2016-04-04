@@ -1,5 +1,5 @@
 /*
-	File: lex.cpp
+	File: delta.h
 	Name: Juan Bancamper
 	Class: CMPT 432
 	Date: 10 Feb 2016
