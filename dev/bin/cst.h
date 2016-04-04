@@ -4,7 +4,7 @@
 	Class: CMPT 432
 	Date: 3 Apr 2016
 
-	This file declares all the functions and class structure for a Concrete
+	This file declares all the functions and classes for a Concrete
 	Syntax Tree.
 */
 
@@ -41,8 +41,6 @@ class Tree{
 		void print_tree(node *,int level);
 
 		node *get_root();
-		// std::string get_current();
-
 };
 
 #endif

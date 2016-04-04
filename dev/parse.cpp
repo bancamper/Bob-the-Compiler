@@ -471,8 +471,15 @@ Return: none
 */
 void parse(std::vector<Token> tokens){
 	curr_token = tokens.begin();
-	parse_program();
-
-	// std::cout << "Tree Root: " << cst.get_root() << std::endl;
-	cst.print_tree(cst.get_root(), 0);
+	int program_coutner = 1;
+	
+	// while(curr_token != tokens.end()){
+		std::cout << "\n-----------------------------------\n"
+			<< "Program #" << program_coutner++
+			<< "\n-----------------------------------\n" << std::endl;
+		parse_program();
+		cst.print_tree(cst.get_root(), 0);
+		// cst.~Tree();
+		// parse_program();
+	// }
 }

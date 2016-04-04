@@ -4,7 +4,7 @@
 	Class: CMPT 432
 	Date: 10 Feb 2016
 
-	This file declares all the functions and constant data types for parsing.
+	This file defines all the class functions for the Concrete Syntax Tree.
 */
 
 #include "bin/cst.h"
@@ -12,7 +12,11 @@
 
 
 void Tree::destroy_tree(node *cur){
-
+	if(cur){
+		destroy_tree(cur -> child);
+		destroy_tree(cur -> younger_sibling);
+		delete cur;
+	}
 }
 
 void Tree::destroy_tree(){
@@ -25,6 +29,7 @@ Tree::Tree(){
 }
 
 Tree::~Tree(){
+	std::cout << "Tree Destroyed" << std::endl;
 	destroy_tree();
 }
 
