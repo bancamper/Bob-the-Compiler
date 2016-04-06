@@ -18,7 +18,6 @@
 #include "bin/parse.h"
 
 std::vector<Token>::iterator curr_token;
-Tree cst;
 
 std::string t[] = {"int", "string", "boolean"};
 std::set<std::string> types(t, t + 3);
@@ -40,7 +39,7 @@ Parameters: match_set
 
 Return: none
 */
-void match(std::set<std::string> match_set){
+void match(std::set<std::string> match_set, Tree &cst){
 
 	for(std::set<std::string>::iterator i = match_set.begin(); i != match_set.end(); ++i){
 		std::string matched = *i;
@@ -81,7 +80,7 @@ Parameters: character
 
 Return: none
 */
-void match(std::string character){
+void match(std::string character, Tree &cst){
 	std::cout << "\nTrying to match: " << character << std::endl;
 	std::cout << "Current Token: " << curr_token -> desc << std::endl;
 
@@ -110,7 +109,7 @@ Parameters: token_type
 
 Return: none
 */
-void match_type(std::string token_type){
+void match_type(std::string token_type, Tree &cst){
 	std::cout << "\nTrying to match: " << token_type << std::endl;
 	std::cout << "Current Token: " << curr_token -> type << std::endl;
 
@@ -139,19 +138,19 @@ Parameters: none
 
 Return: none
 */
-void parse_char_list(){
+void parse_char_list(Tree &cst){
 	cst.add_branch_node("char_list");
 	if (!(curr_token -> type).compare("identifier")){
-		match_type("identifier");
-		parse_char_list();
+		match_type("identifier", cst);
+		parse_char_list(cst);
 	}
 	else if(!(curr_token -> type).compare("keyword")){
-		match_type("keyword");
-		parse_char_list();
+		match_type("keyword", cst);
+		parse_char_list(cst);
 	}
 	else if (!(curr_token -> type).compare("space")){
-		match(" ");
-		parse_char_list();
+		match(" ", cst);
+		parse_char_list(cst);
 	}
 	else{
 		// ε production, do nothing
@@ -168,9 +167,9 @@ Parameters: none
 
 Return: none
 */
-void parse_identifier(){
+void parse_identifier(Tree &cst){
 	cst.add_branch_node("identifier");
-	match_type("identifier");
+	match_type("identifier", cst);
 	cst.kill_all_children();
 }
 
@@ -183,17 +182,17 @@ Parameters: none
 
 Return: none
 */
-void parse_bool(){
+void parse_bool(Tree &cst){
 	cst.add_branch_node("boolean");
 	if(!(curr_token -> type).compare("open_paren")){
-		match_type("open_paren");
-		parse_expr();
-		match(boolop);
-		parse_expr();
-		match(")");
+		match_type("open_paren", cst);
+		parse_expr(cst);
+		match(boolop, cst);
+		parse_expr(cst);
+		match(")", cst);
 	}
 	else{
-		match(boolval);
+		match(boolval, cst);
 	}
 	cst.kill_all_children();
 }
@@ -207,11 +206,11 @@ Parameters: none
 
 Return: none
 */
-void parse_string(){
+void parse_string(Tree &cst){
 	cst.add_branch_node("string");
-	match("\"");
-	parse_char_list();
-	match("\"");
+	match("\"", cst);
+	parse_char_list(cst);
+	match("\"", cst);
 	cst.kill_all_children();
 }
 
@@ -224,18 +223,18 @@ Parameters: none
 
 Return: none
 */
-void parse_int(){
+void parse_int(Tree &cst){
 	cst.add_branch_node("int");
 
 	std::vector<Token>::iterator next_token = std::next(curr_token, 1);
 
 	if(!(next_token -> type).compare("plus")){
-		match_type("digit");
-		match("+");
-		parse_expr();
+		match_type("digit", cst);
+		match("+", cst);
+		parse_expr(cst);
 	}
 	else{
-		match_type("digit");
+		match_type("digit", cst);
 	}
 
 	cst.kill_all_children();
@@ -250,20 +249,20 @@ Parameters: none
 
 Return: none
 */
-void parse_expr(){
+void parse_expr(Tree &cst){
 	cst.add_branch_node("expr");
 	if(!(curr_token -> type).compare("digit")){
-		parse_int();
+		parse_int(cst);
 	}
 	else if(!(curr_token -> type).compare("quote")){
-		parse_string();
+		parse_string(cst);
 	}
 	else if(!(curr_token -> type).compare("open_paren") ||
 		!(curr_token -> type).compare("keyword")){
-		parse_bool();
+		parse_bool(cst);
 	}
 	else if(!(curr_token -> type).compare("identifier")){
-		parse_identifier();
+		parse_identifier(cst);
 	}
 	else{
 		std::cout << "Parse Error on line " << curr_token -> line_number
@@ -284,11 +283,11 @@ Parameters: none
 
 Return: none
 */
-void parse_if(){
+void parse_if(Tree &cst){
 	cst.add_branch_node("if");
-	match("if");
-	parse_bool();
-	parse_block();
+	match("if", cst);
+	parse_bool(cst);
+	parse_block(cst);
 	cst.kill_all_children();
 }
 
@@ -301,11 +300,11 @@ Parameters: none
 
 Return: none
 */
-void parse_while(){
+void parse_while(Tree &cst){
 	cst.add_branch_node("while");
-	match("while");
-	parse_bool();
-	parse_block();
+	match("while", cst);
+	parse_bool(cst);
+	parse_block(cst);
 	cst.kill_all_children();
 }
 
@@ -318,10 +317,10 @@ Parameters: none
 
 Return: none
 */
-void parse_var_decl(){
+void parse_var_decl(Tree &cst){
 	cst.add_branch_node("var_decl");
-	match(types);
-	parse_identifier();
+	match(types, cst);
+	parse_identifier(cst);
 	cst.kill_all_children();
 }
 
@@ -334,11 +333,11 @@ Parameters: none
 
 Return: none
 */
-void parse_assingment(){
+void parse_assingment(Tree &cst){
 	cst.add_branch_node("assignment");
-	parse_identifier();
-	match("=");
-	parse_expr();
+	parse_identifier(cst);
+	match("=", cst);
+	parse_expr(cst);
 	cst.kill_all_children();
 }
 
@@ -351,12 +350,12 @@ Parameters: none
 
 Return: none
 */
-void parse_print(){
+void parse_print(Tree &cst){
 	cst.add_branch_node("print");
-	match("print");
-	match("(");
-	parse_expr();
-	match(")");
+	match("print", cst);
+	match("(", cst);
+	parse_expr(cst);
+	match(")", cst);
 	cst.kill_all_children();
 }
 
@@ -369,25 +368,25 @@ Parameters: none
 
 Return: none
 */
-void parse_statement(){
+void parse_statement(Tree &cst){
 	cst.add_branch_node("statement");
 	if(!(curr_token -> desc).compare("print")){
-		parse_print();
+		parse_print(cst);
 	}
 	else if(!(curr_token -> type).compare("identifier")){
-		parse_assingment();
+		parse_assingment(cst);
 	}
 	else if(types.find(curr_token -> desc) != types.end()){
-		parse_var_decl();
+		parse_var_decl(cst);
 	}
 	else if(!(curr_token -> desc).compare("while")){
-		parse_while();
+		parse_while(cst);
 	}
 	else if(!(curr_token -> desc).compare("if")){
-		parse_if();
+		parse_if(cst);
 	}
 	else if(!(curr_token -> type).compare("open_block")){
-		parse_block();
+		parse_block(cst);
 	}
 	else{
 		std::cout << "Parse Error on line " << curr_token -> line_number
@@ -409,14 +408,14 @@ Parameters: none
 
 Return: none
 */
-void parse_statement_list(){
+void parse_statement_list(Tree &cst){
 	cst.add_branch_node("statement_list");
 	if(!(curr_token -> type).compare("closed_block")){
 		// ε production, do nothing
 	}
 	else{
-		parse_statement();
-		parse_statement_list();
+		parse_statement(cst);
+		parse_statement_list(cst);
 	}
 	cst.kill_all_children();
 }
@@ -430,12 +429,12 @@ Parameters: none
 
 Return: none
 */
-void parse_block(){
+void parse_block(Tree &cst){
 	cst.add_branch_node("block");
 	if(!(curr_token -> type).compare("open_block")) {
-		match("{");
-		parse_statement_list();
-		match("}");
+		match("{", cst);
+		parse_statement_list(cst);
+		match("}", cst);
 	}
 	else{
 		std::cout << "Parse Error" << std::endl;
@@ -453,10 +452,10 @@ Parameters: none
 
 Return: none
 */
-void parse_program(){
+void parse_program(Tree &cst){
 	cst.add_branch_node("program");
-	parse_block();
-	match("$");
+	parse_block(cst);
+	match("$", cst);
 }
 
 /*
@@ -471,15 +470,14 @@ Return: none
 */
 void parse(std::vector<Token> tokens){
 	curr_token = tokens.begin();
-	int program_coutner = 1;
+	int program_coutner = 0;
 	
-	// while(curr_token != tokens.end()){
+	while(curr_token != tokens.end()){
 		std::cout << "\n-----------------------------------\n"
-			<< "Program #" << program_coutner++
+			<< "Program #" << ++program_coutner
 			<< "\n-----------------------------------\n" << std::endl;
-		parse_program();
+		Tree cst;
+		parse_program(cst);
 		cst.print_tree(cst.get_root(), 0);
-		// cst.~Tree();
-		// parse_program();
-	// }
+	}
 }

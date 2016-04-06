@@ -54,7 +54,7 @@ Parameters: state
 
 Return: none
 */
-void reset_state(int& state){
+void reset_state(int &state){
 	state = q0;
 }
 
