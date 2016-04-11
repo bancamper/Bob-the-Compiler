@@ -15,7 +15,7 @@
 #include <vector>
 #include <set>
 
-void parse(std::vector<Token> tokens);
+Tree parse(std::vector<Token> tokens);
 
 void parse_program(Tree &cst);
 

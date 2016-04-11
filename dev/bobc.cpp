@@ -11,8 +11,10 @@
 #include <map>
 #include <vector>
 #include "bin/lex.h"
-// #include "err.h"
 #include "bin/parse.h"
+#include "bin/cst.h"
+#include "bin/ast.h"
+// #include "err.h"
 
 int main(int argc, char const *argv[]){
 	
@@ -20,7 +22,15 @@ int main(int argc, char const *argv[]){
 
 	tokens = lets_get_lexical(argv[argc - 1]);
 
-	parse(tokens);
+	Tree cst = parse(tokens);
+
+	AST ast;
+
+	ast.build_tree(cst.get_root());
+
+	std::cout << "\n\n\tAST" << std::endl;
+
+	ast.print_tree(ast.get_root(), 0);
 
 	std::cout << "\nCompilation Successful" << std::endl;
 	

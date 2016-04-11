@@ -284,7 +284,7 @@ Parameters: none
 Return: none
 */
 void parse_if(Tree &cst){
-	cst.add_branch_node("if");
+	cst.add_branch_node("if_stmt");
 	match("if", cst);
 	parse_bool(cst);
 	parse_block(cst);
@@ -301,7 +301,7 @@ Parameters: none
 Return: none
 */
 void parse_while(Tree &cst){
-	cst.add_branch_node("while");
+	cst.add_branch_node("while_stmt");
 	match("while", cst);
 	parse_bool(cst);
 	parse_block(cst);
@@ -351,7 +351,7 @@ Parameters: none
 Return: none
 */
 void parse_print(Tree &cst){
-	cst.add_branch_node("print");
+	cst.add_branch_node("print_stmt");
 	match("print", cst);
 	match("(", cst);
 	parse_expr(cst);
@@ -468,16 +468,20 @@ Parameters: tokens
 
 Return: none
 */
-void parse(std::vector<Token> tokens){
+Tree parse(std::vector<Token> tokens){
 	curr_token = tokens.begin();
 	int program_coutner = 0;
 	
-	while(curr_token != tokens.end()){
-		std::cout << "\n-----------------------------------\n"
+	// while(curr_token != tokens.end()){
+		std::cout << "\n-------------------------------------------------------\n"
 			<< "Program #" << ++program_coutner
-			<< "\n-----------------------------------\n" << std::endl;
+			<< "\n-------------------------------------------------------\n"
+			<< std::endl;
 		Tree cst;
 		parse_program(cst);
+
+		std::cout << "\n\n\tCST" << std::endl;
 		cst.print_tree(cst.get_root(), 0);
-	}
+		return cst;
+	// }
 }

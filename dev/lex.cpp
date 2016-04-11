@@ -252,14 +252,18 @@ std::vector<Token> lets_get_lexical(std::string file){
 	std::vector<Token> tokens;
 	create_symbols_map();
 
-	const int SIZE = 100;
+	// const int SIZE = 100;
 	int line_count = 1;
-	char buffer[SIZE];
+	// char buffer[SIZE];
 
 	std::ifstream source_code;
 	source_code.open(file);
+	std::string line;
 
-	while(source_code.getline(buffer, SIZE)){
+	while(std::getline(source_code, line)){
+
+		char *buffer = new char[line.length() + 1];
+		std::strcpy(buffer, line.c_str()); 
 
 		for(int i = 0; i < strlen(buffer); i++){
 			reset_state(state);
@@ -382,12 +386,15 @@ std::vector<Token> lets_get_lexical(std::string file){
 		line_count++;
 	}
 
+	source_code.close();
+
 	std::cout << std::endl;
 
 	for(std::vector<Token>::iterator i=tokens.begin(); i != tokens.end(); ++i){
 		std::cout << "Token (" << i->type << ": " << i->desc 
 			<< ") found at line " << i->line_number << std::endl;
 	}
+
 
 	return tokens;
 }
