@@ -193,18 +193,18 @@ Return: boolean
 	true: symbol
 */
 bool is_symbol(char c){
-	std::cout << "Symbol: " << c << std::endl;
+	// std::cout << "Symbol: " << c << std::endl;
 
 	std::set<char>::iterator it = symbols_set.find(c);
 
 	if(it == symbols_set.end()){
-		std::cout << "Not a symbol" << std::endl;
+		// std::cout << "Not a symbol" << std::endl;
 
 		return false;
 	}
 	else{
-		std::cout << symbols_map.find(std::string(1,c)) -> first 
-		<< " is " << symbols_map.find(std::string(1,c)) -> second << std::endl;
+		// std::cout << symbols_map.find(std::string(1,c)) -> first 
+		// << " is " << symbols_map.find(std::string(1,c)) -> second << std::endl;
 
 		if(c == '\"'){
 			if(accept_space){
@@ -284,9 +284,9 @@ std::vector<Token> lets_get_lexical(std::string file){
 					if(is_accepting()){
 						std::string key(buffer);
 
-						std::cout << "Token (keyword: "
-							<< key.substr(i, (current - i) + 1) 
-							<< ") found at line " << line_count << std::endl;
+						// std::cout << "Token (keyword: "
+							// << key.substr(i, (current - i) + 1) 
+							// << ") found at line " << line_count << std::endl;
 
 						tokens.push_back(
 							create_token(
@@ -310,8 +310,8 @@ std::vector<Token> lets_get_lexical(std::string file){
 				}
 			}
 			if (is_identifier(c)){
-				std::cout << "Token (identifier: " << c 
-					<< ") found at line " << line_count << std::endl;
+				// std::cout << "Token (identifier: " << c 
+					// << ") found at line " << line_count << std::endl;
 
 				tokens.push_back(
 					create_token(
@@ -323,8 +323,8 @@ std::vector<Token> lets_get_lexical(std::string file){
 				continue;
 			}
 			if(is_digit(c)){
-				std::cout << "Token (digit: " << c 
-					<< ") found at line " << line_count << std::endl;
+				// std::cout << "Token (digit: " << c 
+					// << ") found at line " << line_count << std::endl;
 
 				tokens.push_back(
 					create_token(
@@ -338,7 +338,7 @@ std::vector<Token> lets_get_lexical(std::string file){
 			if(is_symbol(c)){
 				char pos_symb = buffer[i + 1];
 
-				std::cout << "Next symbol: " << pos_symb << std::endl;
+				// std::cout << "Next symbol: " << pos_symb << std::endl;
 
 				if(pos_symb == '='){
 					i++;

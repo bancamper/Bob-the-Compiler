@@ -47,10 +47,10 @@ void parse_id(Tree &cst);
 
 void parse_char_list(Tree &cst);
 
-void match(std::string match, Tree &cst);
+void match(std::string, Tree &);
 
-void match(std::set<std::string>, Tree &cst);
+void match(std::set<std::string>, Tree &);
 
-void match_type(std::string type, Tree &cst);
+void match_type(std::string, Tree &);
 
 #endif

@@ -44,12 +44,12 @@ void match(std::set<std::string> match_set, Tree &cst){
 	for(std::set<std::string>::iterator i = match_set.begin(); i != match_set.end(); ++i){
 		std::string matched = *i;
 
-		std::cout << "\nTrying to match: " << matched << std::endl;
-		std::cout << "Current Token: " << curr_token -> desc << std::endl;
+		// std::cout << "\nTrying to match: " << matched << std::endl;
+		// std::cout << "Current Token: " << curr_token -> desc << std::endl;
 
 		if(!matched.compare(curr_token -> desc)){
-			std::cout << "Matched token (" << curr_token -> type << ": " 
-				<< curr_token -> desc << ")" << std::endl;
+			// std::cout << "Matched token (" << curr_token -> type << ": " 
+				// << curr_token -> desc << ")" << std::endl;
 			cst.add_leaf_node(matched);
 			++curr_token;
 
@@ -81,12 +81,12 @@ Parameters: character
 Return: none
 */
 void match(std::string character, Tree &cst){
-	std::cout << "\nTrying to match: " << character << std::endl;
-	std::cout << "Current Token: " << curr_token -> desc << std::endl;
+	// std::cout << "\nTrying to match: " << character << std::endl;
+	// std::cout << "Current Token: " << curr_token -> desc << std::endl;
 
 	if(!character.compare(curr_token -> desc)){
-		std::cout << "Matched token (" << curr_token -> type << ": " 
-			<< curr_token -> desc << ")" << std::endl;
+		// std::cout << "Matched token (" << curr_token -> type << ": " 
+			// << curr_token -> desc << ")" << std::endl;
 		++curr_token;
 
 		cst.add_leaf_node(character);
@@ -110,12 +110,12 @@ Parameters: token_type
 Return: none
 */
 void match_type(std::string token_type, Tree &cst){
-	std::cout << "\nTrying to match: " << token_type << std::endl;
-	std::cout << "Current Token: " << curr_token -> type << std::endl;
+	// std::cout << "\nTrying to match: " << token_type << std::endl;
+	// std::cout << "Current Token: " << curr_token -> type << std::endl;
 
 	if(!token_type.compare(curr_token -> type)){
-		std::cout << "Matched token (" << curr_token -> type << ": " 
-			<< curr_token -> desc << ")" << std::endl;
+		// std::cout << "Matched token (" << curr_token -> type << ": " 
+			// << curr_token -> desc << ")" << std::endl;
 		cst.add_leaf_node(curr_token -> desc);
 		++curr_token;
 	}

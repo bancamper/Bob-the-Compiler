@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]){
 
 	std::cout << "\n\n\tAST" << std::endl;
 
-	ast.print_tree(ast.get_root(), 0);
+	ast.print_tree(ast.get_root(), 0); 
 
 	std::cout << "\nCompilation Successful" << std::endl;
 	

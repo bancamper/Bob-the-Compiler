@@ -9,12 +9,15 @@
 */
 
 #include "cst.h"
+#include "symbol_table.h"
 
 #ifndef ASTGUARD_H
 #define ASTGUARD_H
 
 class AST{
 	private:
+		Symbol_Table symbol_table;
+		int level_count;
 		node *root, *current;
 		void add_branch_node(std::string branch);
 		void add_leaf_node(std::string leaf);

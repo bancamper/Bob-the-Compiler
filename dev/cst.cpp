@@ -29,12 +29,11 @@ Tree::Tree(){
 }
 
 Tree::~Tree(){
-	std::cout << "Tree Destroyed" << std::endl;
 	destroy_tree();
 }
 
 node *Tree::get_parent(node *cur){
-	std::cout << "\tCurrent: " << cur -> data << std::endl;
+	// std::cout << "\tCurrent: " << cur -> data << std::endl;
 
 	if(cur -> older_sibling){
 
@@ -66,7 +65,7 @@ void Tree::add_branch_node(std::string branch){
 	}
 	else{
 		if(!current -> child){
-			std::cout << "Parent: " << current -> data << " -- Child: " << temp -> data << std::endl;
+			// std::cout << "Parent: " << current -> data << " -- Child: " << temp -> data << std::endl;
 			current -> child = new node;
 			current -> child = temp; 
 
@@ -77,7 +76,7 @@ void Tree::add_branch_node(std::string branch){
 			node *n = new node;
 			n = get_youngest_sibling(current -> child);
 
-			std::cout << "Current Youngest: " << n -> data << std::endl;
+			// std::cout << "Current Youngest: " << n -> data << std::endl;
 
 			n -> younger_sibling = new node;
 			n -> younger_sibling = temp;
@@ -85,8 +84,8 @@ void Tree::add_branch_node(std::string branch){
 			temp -> older_sibling = new node;
 			temp -> older_sibling = n;
 
-			std::cout << "Older Sibling: " << temp -> older_sibling -> data << " -- Younger Sibling: " 
-				<< n -> younger_sibling -> data << std::endl;
+			// std::cout << "Older Sibling: " << temp -> older_sibling -> data << " -- Younger Sibling: " 
+				// << n -> younger_sibling -> data << std::endl;
 
 		}
 	}
@@ -94,7 +93,7 @@ void Tree::add_branch_node(std::string branch){
 	current = new node;
 	current = temp;
 
-	std::cout << "Current Pointed Node: " << current -> data << std::endl << std::endl;
+	// std::cout << "Current Pointed Node: " << current -> data << std::endl << std::endl;
 }
 
 void Tree::add_leaf_node(std::string leaf){
@@ -111,7 +110,7 @@ void Tree::add_leaf_node(std::string leaf){
 	}
 	else{
 		if(!current -> child){
-			std::cout << "Parent: " << current -> data << " -- Child: " << temp -> data << std::endl;
+			// std::cout << "Parent: " << current -> data << " -- Child: " << temp -> data << std::endl;
 			current -> child = new node;
 			current -> child = temp;
 
@@ -122,7 +121,7 @@ void Tree::add_leaf_node(std::string leaf){
 			node *n = new node;
 			n = get_youngest_sibling(current -> child);
 
-			std::cout << "Current Youngest: " << n -> data << std::endl;
+			// std::cout << "Current Youngest: " << n -> data << std::endl;
 
 			n -> younger_sibling = new node;
 			n -> younger_sibling = temp;
@@ -130,12 +129,12 @@ void Tree::add_leaf_node(std::string leaf){
 			temp -> older_sibling = new node;
 			temp -> older_sibling = n;
 
-			std::cout << "Older Sibling: " << temp -> older_sibling -> data << " -- Younger Sibling: " 
-				<< n -> younger_sibling -> data << std::endl;
+			// std::cout << "Older Sibling: " << temp -> older_sibling -> data << " -- Younger Sibling: " 
+				// << n -> younger_sibling -> data << std::endl;
 		}
 	}
 
-	std::cout << "Current Pointed Node: " << current -> data << std::endl << std::endl;
+	// std::cout << "Current Pointed Node: " << current -> data << std::endl << std::endl;
 }
 
 node *Tree::get_root(){
@@ -145,10 +144,10 @@ node *Tree::get_root(){
 void Tree::kill_all_children(){
 	node *n = new node;
 
-	std::cout << "In get_parent()" << std::endl;
+	// std::cout << "In get_parent()" << std::endl;
 	n = get_parent(current);
 
-	std::cout << "\nCurrent Parent: " << n -> data << std::endl;
+	// std::cout << "\nCurrent Parent: " << n -> data << std::endl;
 
 	current = n;
 }

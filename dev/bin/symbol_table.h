@@ -24,13 +24,20 @@ struct scope{
 class Symbol_Table{
 	private:
 		scope *root, *current;
-		bool search(char);
-		void insert(char, std::string);
+		scope *get_parent(scope *);
+		scope *get_youngest_sibling(scope *);
 
 
 	public:
 		Symbol_Table();
 		~Symbol_Table();
+		bool search(char, scope *);
+		void insert(char, std::string);
+		void add_scope(int);
+		void kill_all_children();
+		scope *get_current();
+		void integrity(char, std::string);
+		void print_tree(scope *, int);
 	
 };
 
