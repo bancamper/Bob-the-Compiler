@@ -258,6 +258,10 @@ std::vector<Token> lets_get_lexical(std::string file){
 
 	std::ifstream source_code;
 	source_code.open(file);
+	if(!source_code){
+		std::cout << "ERROR: Source file not found" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 	std::string line;
 
 	while(std::getline(source_code, line)){
@@ -375,7 +379,7 @@ std::vector<Token> lets_get_lexical(std::string file){
 					}
 				}
 				else{
-					std::cerr << "Invalid character: " << c << " at line " 
+					std::cerr << "ERROR: Invalid character: " << c << " at line " 
 						<< line_count << std::endl;
 
 					exit(EXIT_FAILURE);
@@ -387,14 +391,6 @@ std::vector<Token> lets_get_lexical(std::string file){
 	}
 
 	source_code.close();
-
-	std::cout << std::endl;
-
-	for(std::vector<Token>::iterator i=tokens.begin(); i != tokens.end(); ++i){
-		std::cout << "Token (" << i->type << ": " << i->desc 
-			<< ") found at line " << i->line_number << std::endl;
-	}
-
 
 	return tokens;
 }

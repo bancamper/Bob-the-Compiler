@@ -473,15 +473,15 @@ Tree parse(std::vector<Token> tokens){
 	int program_coutner = 0;
 	
 	// while(curr_token != tokens.end()){
-		std::cout << "\n-------------------------------------------------------\n"
-			<< "Program #" << ++program_coutner
-			<< "\n-------------------------------------------------------\n"
-			<< std::endl;
+		// std::cout << "\n-------------------------------------------------------\n"
+		// 	<< "Program #" << ++program_coutner
+		// 	<< "\n-------------------------------------------------------\n"
+		// 	<< std::endl;
 		Tree cst;
 		parse_program(cst);
 
-		std::cout << "\n\n\tCST" << std::endl;
-		cst.print_tree(cst.get_root(), 0);
+		// std::cout << "\n\n\tCST" << std::endl;
+		// cst.print_tree(cst.get_root(), 0);
 		return cst;
 	// }
 }
