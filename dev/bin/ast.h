@@ -19,8 +19,8 @@ class AST{
 		Symbol_Table symbol_table;
 		int level_count;
 		node *root, *current;
-		void add_branch_node(std::string branch);
-		void add_leaf_node(std::string leaf);
+		void add_branch_node(std::string);
+		void add_leaf_node(std::string, int);
 		void kill_all_children();
 		node *get_youngest_sibling(node *);
 		node *get_parent(node *);
@@ -37,14 +37,27 @@ class AST{
 		void traverse_if(node *);
 		void traverse_id(node *);
 
+		void check_assignment(node *);
+		void check_if(node *);
+		void check_while(node *);
+		void check_int(node *);
+		void check_string(node *);
+		std::string check_bool(node *);
+		void check_print(node *);
+
 	public:
 		AST();
 		~AST();
 
-		void print_tree(node *,int level);
+		void print_tree(node *, int);
+		void scope_check();
+		void print_table();
+		void type_check(node *);
 		void build_tree(node *);
 
 		node *get_root();
 };
+
+AST semantisize(Tree &);
 
 #endif

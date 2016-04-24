@@ -54,6 +54,7 @@ node *Tree::get_youngest_sibling(node *cur){
 void Tree::add_branch_node(std::string branch){
 	node *temp = new node;
 	temp -> data = branch;
+	temp -> line_num = 0;
 	temp -> parent = NULL;
 	temp -> child = NULL;
 	temp -> older_sibling = NULL;
@@ -96,9 +97,10 @@ void Tree::add_branch_node(std::string branch){
 	// std::cout << "Current Pointed Node: " << current -> data << std::endl << std::endl;
 }
 
-void Tree::add_leaf_node(std::string leaf){
+void Tree::add_leaf_node(std::string leaf, int line){
 	node *temp = new node;
 	temp -> data = leaf;
+	temp -> line_num = line;
 	temp -> parent = NULL;
 	temp -> child = NULL;
 	temp -> older_sibling = NULL;

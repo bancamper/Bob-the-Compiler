@@ -50,7 +50,7 @@ void match(std::set<std::string> match_set, Tree &cst){
 		if(!matched.compare(curr_token -> desc)){
 			// std::cout << "Matched token (" << curr_token -> type << ": " 
 				// << curr_token -> desc << ")" << std::endl;
-			cst.add_leaf_node(matched);
+			cst.add_leaf_node(matched, curr_token -> line_number);
 			++curr_token;
 
 			return;
@@ -89,7 +89,7 @@ void match(std::string character, Tree &cst){
 			// << curr_token -> desc << ")" << std::endl;
 		++curr_token;
 
-		cst.add_leaf_node(character);
+		cst.add_leaf_node(character, curr_token -> line_number);
 	}
 	else{
 		std::cout << "Parse Error on line " << curr_token -> line_number
@@ -116,7 +116,7 @@ void match_type(std::string token_type, Tree &cst){
 	if(!token_type.compare(curr_token -> type)){
 		// std::cout << "Matched token (" << curr_token -> type << ": " 
 			// << curr_token -> desc << ")" << std::endl;
-		cst.add_leaf_node(curr_token -> desc);
+		cst.add_leaf_node(curr_token -> desc, curr_token -> line_number);
 		++curr_token;
 	}
 	else{
@@ -437,7 +437,7 @@ void parse_block(Tree &cst){
 		match("}", cst);
 	}
 	else{
-		std::cout << "Parse Error" << std::endl;
+		std::cout << "Invalid block declaration on line " << curr_token -> line_number << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	cst.kill_all_children();
@@ -455,7 +455,17 @@ Return: none
 void parse_program(Tree &cst){
 	cst.add_branch_node("program");
 	parse_block(cst);
-	match("$", cst);
+
+	if(!curr_token -> desc.compare("$")){
+		match("$", cst);
+		std:: cout << "No Parse Warnings" << std::endl;
+	}
+	else{
+		std::cout << "\nParse Warning: Missing end_of_program - $ on line " 
+			<< (--curr_token) -> line_number << std::endl << std::endl;
+		cst.add_leaf_node("$", curr_token -> line_number);
+		curr_token++;
+	}
 }
 
 /*
@@ -468,8 +478,8 @@ Parameters: tokens
 
 Return: none
 */
-Tree parse(std::vector<Token> tokens){
-	curr_token = tokens.begin();
+Tree parse(std::vector<Token>::iterator tokens){
+	curr_token = tokens;
 	int program_coutner = 0;
 	
 	// while(curr_token != tokens.end()){

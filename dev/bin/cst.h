@@ -15,6 +15,7 @@
 
 struct node{
 	std::string data;
+	int line_num;
 	node *parent;
 	node *child;
 	node *older_sibling;
@@ -26,7 +27,7 @@ class Tree{
 		node *root;
 		node *current;
 
-		void destroy_tree(node *leaf);
+		void destroy_tree(node *);
 		node *get_youngest_sibling(node *);
 		node *get_parent(node *);
 
@@ -34,11 +35,11 @@ class Tree{
 		Tree();
 		~Tree();
 
-		void add_branch_node(std::string branch);
-		void add_leaf_node(std::string leaf);
+		void add_branch_node(std::string);
+		void add_leaf_node(std::string, int);
 		void kill_all_children();
 		void destroy_tree();
-		void print_tree(node *,int level);
+		void print_tree(node *,int);
 
 		node *get_root();
 };
