@@ -72,7 +72,7 @@ void Symbol_Table::insert(char c, std::string type, int line_num){
 		false,
 		false
 	};
-	current -> symbols.insert(std::make_pair<char, var_info>(c, v));
+	current -> symbols.insert(std::pair<char, var_info>(c, v));
 }
 
 scope *Symbol_Table::get_parent(scope *cur){
