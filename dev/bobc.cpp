@@ -14,7 +14,7 @@
 #include "bin/parse.h"
 #include "bin/cst.h"
 #include "bin/ast.h"
-// #include "err.h"
+#include "bin/code_gen.h"
 
 extern std::vector<Token>::iterator curr_token;
 
@@ -34,12 +34,14 @@ void output(
 	}
 	else if(!option.compare("-tokens")){
 		for(std::vector<Token>::iterator i = start_tok; i != end_tok; ++i){
+
 			std::cout << "Token (" << i->type << ": " << i->desc 
 				<< ") found at line " << i->line_number << std::endl;
 		}
 	}
 	else if(!option.compare("-verbose")){
 		for(std::vector<Token>::iterator i = start_tok; i != end_tok; ++i){
+
 			std::cout << "Token (" << i->type << ": " << i->desc 
 				<< ") found at line " << i->line_number << std::endl;
 		}
@@ -96,6 +98,11 @@ int main(int argc, char const *argv[]){
 			<< std::endl;
 		Tree cst = parse(token_ptr);
 		AST ast = semantisize(cst);
+
+		ast.print_tree(ast.get_root(), 0);
+		std::cout << std::endl;
+
+		CodeGen cg = hex(ast);
 
 		if(argc == 3){
 			output(argv[1], tokens, token_ptr, curr_token, cst, ast);

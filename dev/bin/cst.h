@@ -11,7 +11,7 @@
 #include <iostream>
 
 #ifndef CSTGUARD_H
-#define CSTGUARD_H value
+#define CSTGUARD_H
 
 struct node{
 	std::string data;

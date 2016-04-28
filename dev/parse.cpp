@@ -461,7 +461,7 @@ void parse_program(Tree &cst){
 		std:: cout << "No Parse Warnings" << std::endl;
 	}
 	else{
-		std::cout << "\nParse Warning: Missing end_of_program - $ on line " 
+		std::cout << "\nParse Warning(s):\n\tMissing end_of_program - $ on line " 
 			<< (--curr_token) -> line_number << std::endl << std::endl;
 		cst.add_leaf_node("$", curr_token -> line_number);
 		curr_token++;
