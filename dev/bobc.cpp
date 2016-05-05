@@ -18,6 +18,25 @@
 
 extern std::vector<Token>::iterator curr_token;
 
+void print_options(){
+	std::cout << "\t-help\t\tDisplay these options"
+		<< std::endl;
+
+	std::cout << "\t-symbols\tOutput symbol table created by programs"
+		<< std::endl;
+
+	std::cout << "\t-trees\t\tOutput CST and AST"
+		<< std::endl;
+
+	std::cout << "\t-tokens\t\tOutput all tokens"
+		<< std::endl;
+
+	std::cout << "\t-verbose\tOutput everything the compiler is doing"
+		<< std::endl;
+
+
+}
+
 void output(
 	std::string option, 
 	std::vector<Token> tokens,
@@ -57,25 +76,12 @@ void output(
 	else if(!option.compare("-symbols")){
 		ast.print_table();
 	}
-}
-
-void print_options(){
-	std::cout << "\t-help\t\tDisplay these options"
-		<< std::endl;
-
-	std::cout << "\t-symbols\tOutput symbol table created by programs"
-		<< std::endl;
-
-	std::cout << "\t-trees\t\tOutput CST and AST"
-		<< std::endl;
-
-	std::cout << "\t-tokens\t\tOutput all tokens"
-		<< std::endl;
-
-	std::cout << "\t-verbose\tOutput everything the compiler is doing"
-		<< std::endl;
-
-
+	else{
+		std::cout << "Unrecognized option" << std::endl;
+		std::cout << "\nUsage: ./bobc [option] <source file>\noptions include:" << std::endl;
+		print_options();
+		exit(EXIT_FAILURE);
+	}
 }
 
 int main(int argc, char const *argv[]){

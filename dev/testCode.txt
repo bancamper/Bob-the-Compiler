@@ -1,15 +1,7 @@
 {
-    int a
-    boolean b
-    int z
-    string c
-    z = 5
-    {
-        a = 6 + 4 + z
-        c = "alan"
-        z = a
-        b = true
-    }
-    
-    print(a)
+    boolean a
+    string z
+    z = "ya"
+    a = false
+    print("this is crazy")
 }$
