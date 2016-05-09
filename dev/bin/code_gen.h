@@ -26,18 +26,14 @@ struct var_addr{
 	int scope, offset;
 };
 
-struct jump_addr{
-	std::string temp;
-	int offset;
-};
-
 class CodeGen{
 	private:
 		std::string bytes[256];
 		std::string load_int;
-		int heap_ptr, code_ptr, temp_num, scope_level, compilation_temp_vars;
+		int heap_ptr, code_ptr, temp_num, scope_level, compilation_temp_vars,
+			jump_num;
 		std::vector<var_addr> static_table;
-		std::vector<jump_addr> jump_table;
+		std::map<std::string, int> jump_table;
 
 		void load_acc_const(std::string);
 		void load_acc_mem(std::string);
@@ -50,7 +46,8 @@ class CodeGen{
 		void no_op();
 		void break_program();
 		void compare_x_to_mem(std::string);
-		void branch_not_equal();
+		std::string branch_not_equal();
+		std::string branch_if_equal();
 		void increment(std::string);
 		void system_call();
 
@@ -62,7 +59,7 @@ class CodeGen{
 		void print_tables();
 		struct var_addr find_var(char);
 		struct var_addr find_var(std::string);
-		struct jump_addr find_jump(std::string);
+		std::map<std::string, int>::iterator find_jump(std::string);
 		void generate_primitive(std::string, node *);
 		node *get_parent(node *);
 		void generate_int(node *);
@@ -71,8 +68,8 @@ class CodeGen{
 		void generate_string(std::string);
 		void generate_print(node *);
 		void generate_assignment(node *);
-		void generate_if(node *);
-		void generate_while(node *);
+		std::string generate_if(node *);
+		std::string generate_while(node *);
 		void generate_var_decl(node *);
 		void generate(node *);
 		void print_hex();

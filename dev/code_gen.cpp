@@ -18,6 +18,7 @@ CodeGen::CodeGen(){
 	temp_num = 0;
 	scope_level = -1;
 	compilation_temp_vars = 0;
+	jump_num = 0;
 }
 
 CodeGen::~CodeGen(){
@@ -134,11 +135,41 @@ void CodeGen::break_program(){
 }
 
 void CodeGen::compare_x_to_mem(std::string addr){
-
+	if((code_ptr + 3) < heap_ptr){
+		bytes[code_ptr++] = "EC";
+		bytes[code_ptr++] = addr.substr(0, 2);
+		bytes[code_ptr++] = addr.substr(2, 2);
+	}
+	else{
+		std::cout << "\nRan out of memory" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
-void CodeGen::branch_not_equal(){
+std::string CodeGen::branch_not_equal(){
+	bytes[code_ptr++] = "D0";
 
+	std::stringstream temp_addr;
+	temp_addr << "J" << jump_num++;
+
+	jump_table.insert(std::pair<std::string, int>(temp_addr.str(), 0));
+
+	bytes[code_ptr++] = temp_addr.str();
+
+	return temp_addr.str();
+}
+
+std::string CodeGen::branch_if_equal(){
+	bytes[code_ptr++] = "F0";
+
+	std::stringstream temp_addr;
+	temp_addr << "J" << jump_num++;
+
+	jump_table.insert(std::pair<std::string, int>(temp_addr.str(), 0));
+
+	bytes[code_ptr++] = temp_addr.str();
+
+	return temp_addr.str();
 }
 
 void CodeGen::increment(std::string addr){
@@ -169,12 +200,12 @@ void CodeGen::print_tables(){
 		<< "--------------------------" 
 		<< std::endl;
 
-	for (std::vector<jump_addr>::iterator i = jump_table.begin();
+	for (std::map<std::string, int>::iterator i = jump_table.begin();
 		i != jump_table.end();
 		i++){
 		
-		std::cout << "      " << i -> temp << "      |      " 
-			<< i -> offset << std::endl;	
+		std::cout << "      " << i -> first << "      |     " 
+			<< i -> second << std::endl;	
 	}
 }
 
@@ -210,8 +241,15 @@ struct var_addr CodeGen::find_var(std::string addr){
 	}
 }
 
-struct jump_addr CodeGen::find_jump(std::string jump){
-
+std::map<std::string, int>::iterator CodeGen::find_jump(std::string jump){
+	for (std::map<std::string, int>::iterator i = jump_table.begin(); 
+		i != jump_table.end();
+		i++){
+		
+		if(!jump.compare(i -> first)){
+			return i;
+		}
+	}
 }
 
 void CodeGen::generate_primitive(std::string type, node *cur){
@@ -345,17 +383,29 @@ std::string CodeGen::generate_bool(node *cur){
 			if(std::regex_match(expr_1, std::regex("T[0-9]*xx")) &&
 				std::regex_match(expr_2, std::regex("T[0-9]*xx"))){
 
-
+				load_x_mem(expr_1);
+				compare_x_to_mem(expr_2);
 			}
 			else if(std::regex_match(expr_1, std::regex("T[0-9]*xx"))){
+				char *val_star = new char[2];
+		 		std::sprintf(val_star, "%02X", std::stoi(expr_2));
 
+				load_x_const(val_star);
+				compare_x_to_mem(expr_1);
 			}
 			else if(std::regex_match(expr_2, std::regex("T[0-9]*xx"))) {
+				char *val_star = new char[2];
+		 		std::sprintf(val_star, "%02X", std::stoi(expr_1));
 
+				load_x_const(val_star);
+				compare_x_to_mem(expr_2);
 			}
 			else{
+				// load_acc_const(expr_1);
 
 			}
+
+			return "";
 		}
 		else if(!cur -> data.compare("true") ||
 			!cur -> data.compare("false")){
@@ -368,7 +418,7 @@ std::string CodeGen::generate_bool(node *cur){
 			return (std::regex_match(cur -> data, std::regex("[0-9]")) ? cur -> data : "");
 		}
 		else if(std::regex_match(cur -> data, std::regex("[a-z]"))){
-
+			return find_var(cur -> data[0]).temp;
 		}
 	}
 }
@@ -407,6 +457,7 @@ void CodeGen::generate_assignment(node *cur){
 		else if(!v.type.compare("boolean")){
 			std::string a = generate_bool(cur -> younger_sibling);
 
+			load_acc_const(a);
 		}
 		else if(!v.type.compare("string")){
 			generate_string(cur -> younger_sibling -> data);
@@ -416,12 +467,83 @@ void CodeGen::generate_assignment(node *cur){
 	}
 }
 
-void CodeGen::generate_if(node *cur){
+std::string CodeGen::generate_if(node *cur){
+	if(cur){
+		std::string a = generate_bool(cur);
 
+		if(!a.empty()){
+			std::stringstream temp_addr;
+			temp_addr << "I" << compilation_temp_vars++ << "xx";
+
+			var_addr v = {
+				temp_addr.str(),
+				'#',
+				"digit",
+				scope_level,
+				temp_num++
+			};
+
+			if(std::stoi(a)){
+				static_table.push_back(v);
+				load_acc_const(a);
+			}
+			else{
+				load_acc_const("01");
+			}
+
+			store_acc(v.temp);
+
+			load_x_const(a);
+			compare_x_to_mem(v.temp);
+
+			return branch_not_equal();
+		}
+
+		return (!cur -> data.compare("==") ? 
+			branch_not_equal() : 
+			branch_if_equal()
+		);
+	}
 }
 
-void CodeGen::generate_while(node *cur){
+std::string CodeGen::generate_while(node *cur){
+	if(cur){
+		std::string a = generate_bool(cur);
 
+		if(!a.empty()){
+			std::stringstream temp_addr;
+			temp_addr << "I" << compilation_temp_vars++ << "xx";
+
+			var_addr v = {
+				temp_addr.str(),
+				'#',
+				"digit",
+				scope_level,
+				temp_num++
+			};
+
+			if(std::stoi(a)){
+				static_table.push_back(v);
+				load_acc_const(a);
+			}
+			else{
+				load_acc_const("01");
+			}
+
+			store_acc(v.temp);
+
+			load_x_const(a);
+			compare_x_to_mem(v.temp);
+
+			return branch_not_equal();
+
+		}
+
+		return (!cur -> data.compare("==") ? 
+			branch_not_equal() : 
+			branch_if_equal()
+		);
+	}
 }
 
 void CodeGen::generate_print(node *cur){
@@ -492,6 +614,9 @@ void CodeGen::generate_print(node *cur){
 
 void CodeGen::generate(node *cur){
 	if(cur){
+		int a = 0, bool_jump = 0;
+		std::string jump = "";
+
 		if(!cur -> data.compare("block")){
 			scope_level++;
 		}
@@ -502,10 +627,13 @@ void CodeGen::generate(node *cur){
 			generate_assignment(cur -> child);
 		}
 		else if(!cur -> data.compare("if")){
-			generate_if(cur -> child);
+			jump = generate_if(cur -> child);
+			a = code_ptr;
 		}
 		else if(!cur -> data.compare("while")){
-			generate_while(cur -> child);
+			// bool_jump = code_ptr + 1;
+			// jump = generate_while(cur -> child);
+			// a = code_ptr;
 		}
 		else if(!cur -> data.compare("print")){
 			generate_print(cur -> child);
@@ -515,6 +643,20 @@ void CodeGen::generate(node *cur){
 
 		if(!cur -> data.compare("block")){
 			scope_level--;
+		}
+		else if(!cur -> data.compare("if")){
+			std::map<std::string, int>::iterator j = find_jump(jump);
+			j -> second = code_ptr - a;
+
+			// std::cout << "If Jump Distance: " << j -> second << std::endl;
+		}
+		else if(!cur -> data.compare("while")){
+			// std::map<std::string, int>::iterator j = find_jump(jump), i;
+
+			// i = find_jump(branch_not_equal());
+
+			// j -> second = code_ptr - a;
+			// i -> second = 256 - (code_ptr - bool_jump);
 		}
 
 		generate(cur -> younger_sibling);
@@ -542,6 +684,14 @@ void CodeGen::back_patch(){
 	 		bytes[i++] = val_star;
 	 		bytes[i] = "00";
 		}
+		else if(std::regex_match(bytes[i], std::regex("J[0-9]*"))){
+			int offset = find_jump(bytes[i]) -> second;
+			char *val_star = new char[2];
+	 		std::sprintf(val_star, "%02X", offset);
+
+	 		// std::cout << bytes[i] << ": " << offset << std::endl;
+	 		bytes[i++] = val_star;
+		}
 	}
 }
 
@@ -556,8 +706,8 @@ CodeGen hex(AST &ast){
 	cg.generate(ast.get_root());
 	cg.back_patch();
 	cg.fill();
-	cg.print_hex();
-	cg.print_tables();
+	// cg.print_hex();
+	// cg.print_tables();
 
 	return cg;
 }

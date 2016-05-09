@@ -34,7 +34,6 @@ void print_options(){
 	std::cout << "\t-verbose\tOutput everything the compiler is doing"
 		<< std::endl;
 
-
 }
 
 void output(
@@ -105,18 +104,17 @@ int main(int argc, char const *argv[]){
 		Tree cst = parse(token_ptr);
 		AST ast = semantisize(cst);
 
-		ast.print_tree(ast.get_root(), 0);
-		std::cout << std::endl;
-
 		CodeGen cg = hex(ast);
 
 		if(argc == 3){
 			output(argv[1], tokens, token_ptr, curr_token, cst, ast);
 		}
 		token_ptr = curr_token;
+
+		cg.print_hex();
 	}
 
-	std::cout << "\nCompilation Successful" << std::endl;
+	std::cout << "\n\nCompilation Successful" << std::endl;
 	
 	return 0;
 }

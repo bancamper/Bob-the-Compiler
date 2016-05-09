@@ -1,7 +1,17 @@
 {
-    boolean a
+    int a
     string z
-    z = "ya"
-    a = false
-    print("this is crazy")
+    int b
+    b = 4 + 5
+    z = "ya "
+    a = 7
+    if(9 == b) {
+        print("first if")
+
+        if(a == 7){
+            print("second if")
+            a = 1 + a
+        }
+    }
+    print(a)
 }$
