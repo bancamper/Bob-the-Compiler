@@ -217,6 +217,7 @@ void CodeGen::print_hex(){
 		}
 		std::cout << bytes[i] << " ";
 	}
+	std::cout << std::endl;
 }
 
 struct var_addr CodeGen::find_var(char c){
@@ -524,10 +525,10 @@ std::string CodeGen::generate_while(node *cur){
 
 			if(std::stoi(a)){
 				static_table.push_back(v);
-				load_acc_const(a);
+				load_acc_const("00");
 			}
 			else{
-				load_acc_const("01");
+				load_acc_const(a);
 			}
 
 			store_acc(v.temp);
@@ -631,9 +632,8 @@ void CodeGen::generate(node *cur){
 			a = code_ptr;
 		}
 		else if(!cur -> data.compare("while")){
-			// bool_jump = code_ptr + 1;
-			// jump = generate_while(cur -> child);
-			// a = code_ptr;
+			bool_jump = code_ptr + 1;
+			a = code_ptr;
 		}
 		else if(!cur -> data.compare("print")){
 			generate_print(cur -> child);
@@ -651,12 +651,14 @@ void CodeGen::generate(node *cur){
 			// std::cout << "If Jump Distance: " << j -> second << std::endl;
 		}
 		else if(!cur -> data.compare("while")){
-			// std::map<std::string, int>::iterator j = find_jump(jump), i;
+			jump = generate_while(cur -> child);
+
+			std::map<std::string, int>::iterator j = find_jump(jump);
 
 			// i = find_jump(branch_not_equal());
 
 			// j -> second = code_ptr - a;
-			// i -> second = 256 - (code_ptr - bool_jump);
+			j -> second = 256 - (code_ptr - bool_jump) - 1;
 		}
 
 		generate(cur -> younger_sibling);

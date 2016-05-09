@@ -114,7 +114,7 @@ int main(int argc, char const *argv[]){
 		cg.print_hex();
 	}
 
-	std::cout << "\n\nCompilation Successful" << std::endl;
+	std::cout << "\nCompilation Successful" << std::endl;
 	
 	return 0;
 }
