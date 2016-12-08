@@ -10,38 +10,39 @@ Usage:
 >`./bobc [option] testCode.txt`
 
 ##Grammar
-|Program			|Block **$**
-|Block 				|**{** StatementList **}**
-|StatementList		|Statement StatementList
-|					|Ø
-|Statement  		|PrintStatement
-|					|AssignmentStatement
-|					|VarDecl
-|					|WhileStatement
-|					|IfStatement
-|					|Block
-|PrintStatement 	|**print (** Expr **)**
-|AssignmentStatement|Id **=** Expr
-|VarDecl			|type Id
-|WhileStatement		|**while** BooleanExpr Block
-|IfStatement  		|**if** BooleanExpr Block
-|Expr  				|IntExpr
-|					|StringExpr
-|					|BooleanExpr
-|					|Id
-|IntExpr			|digit intop Expr
-|					|digit
-|StringExpr			|**"** CharList **"**
-|BooleanExpr		|**(** Expr boolop Expr **)**
-|					|boolval
-|Id  				|char
-|CharList			|char CharList
-|					|Ø
-
-|type				|**int** : **string** : **boolean**
-|char  				|**a** : **b** : **c ... z**
-|space				|the **space** character
-|digit				|**1** : **2** : **3** : **4** : **5** : **6** : **7** : **8** : **9** : **0**
-|boolop				|**==** : **!=**
-|boolval			|**true** : **false**
-|intop				|**+**
+|Non-Terminals|Terminals|
+|---|---|
+|Program			|Block **$**|
+|Block 				|**{** StatementList **}**|
+|StatementList		|Statement StatementList|
+|					|Ø|
+|Statement  		|PrintStatement|
+|					|AssignmentStatement|
+|					|VarDecl|
+|					|WhileStatement|
+|					|IfStatement|
+|					|Block|
+|PrintStatement 	|**print (** Expr **)**|
+|AssignmentStatement|Id **=** Expr|
+|VarDecl			|type Id|
+|WhileStatement		|**while** BooleanExpr Block|
+|IfStatement  		|**if** BooleanExpr Block|
+|Expr  				|IntExpr|
+|					|StringExpr|
+|					|BooleanExpr|
+|					|Id|
+|IntExpr			|digit intop Expr|
+|					|digit|
+|StringExpr			|**"** CharList **"**|
+|BooleanExpr		|**(** Expr boolop Expr **)**|
+|					|boolval|
+|Id  				|char|
+|CharList			|char CharList|
+|					|Ø|
+|type				|**int** : **string** : **boolean**|
+|char  				|**a** : **b** : **c ... z**|
+|space				|the **space** character|
+|digit				|**1** : **2** : **3** : **4** : **5** : **6** : **7** : **8** : **9** : **0**|
+|boolop				|**==** : **!=**|
+|boolval			|**true** : **false**|
+|intop				|**+**|
