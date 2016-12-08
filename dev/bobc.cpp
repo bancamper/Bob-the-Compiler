@@ -111,7 +111,7 @@ int main(int argc, char const *argv[]){
 		}
 		token_ptr = curr_token;
 
-		cg.print_hex();
+		// cg.print_hex();
 	}
 
 	std::cout << "\nCompilation Successful" << std::endl;

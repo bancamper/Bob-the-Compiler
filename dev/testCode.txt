@@ -1,11 +1,7 @@
 {
     int a
-    string z
-    int b
-    b = 4 + 5
-    z = "ya "
-    a = 0
-    while (a == 1) {
+    a = 1
+    if(1 != a) {
         a = 1 + a
         print(a)
     }

@@ -64,7 +64,6 @@ class CodeGen{
 		node *get_parent(node *);
 		void generate_int(node *);
 		std::string generate_bool(node *);
-		void generate_identifier(char, char);
 		void generate_string(std::string);
 		void generate_print(node *);
 		void generate_assignment(node *);
