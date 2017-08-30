@@ -10,6 +10,7 @@ Usage:
 >`./bobc [option] testCode.txt`
 
 ##Grammar
+
 |Non-Terminals|Terminals|
 |---|---|
 |Program			|Block **$**|
